@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KnightFX Trading Labs
 
-## Getting Started
+A responsive trading education website for KnightFX Trading Labs. The public site uses the supplied brand logo and Hareesh portrait, includes editable course and market content, and keeps partner and evidence claims unpublished until verified.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Supabase setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Copy `.env.example` to `.env.local` and set the public site URL, Supabase project URL, and anon key.
+2. Apply [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor.
+3. Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` on the server deployment only. The service-role key is used by the contact route and must never use a `NEXT_PUBLIC_` prefix.
+4. Create an administrator account in Supabase Auth. Assign `app_metadata.role = "admin"` with a trusted Supabase Admin API operation. Do not grant admin through user-editable metadata.
+5. Visit `/admin` and sign in. Supabase row-level security checks the admin role for database writes and media uploads.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The admin workspace manages course outlines, market posts, verified evidence, partners, public site settings, contact submissions, and uploaded media. Public pages read published records from Supabase and use the local editable content in [`src/lib/content.ts`](src/lib/content.ts) when no public content is configured. Results require both `verified` and `published`; partner cards only show records with active status.
 
-## Learn More
+Contact form success is returned only after a database insert succeeds. If the Supabase server credentials or `contact_submissions` table are unavailable, the form reports that the message was not sent.
 
-To learn more about Next.js, take a look at the following resources:
+## Content safety
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Market room seed posts are labeled demonstration content and contain no live prices or trading calls.
+- No payout evidence, partner relationships, discount codes, community sizes, testimonials or performance statistics are invented.
+- Add verified social destinations under the public `social_links` setting. Add mentor overrides under `mentor_profile`.
+- Set `NEXT_PUBLIC_SITE_URL` to the real deployed origin to populate canonical metadata, sitemap and robots host values.
+- Review the privacy and terms drafts and add the actual business identity and contact details before publishing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Stack
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js App Router, React, TypeScript, Tailwind CSS, Framer Motion, GSAP + ScrollTrigger, Lenis, Lucide, and optional Supabase Auth, PostgreSQL and Storage.
