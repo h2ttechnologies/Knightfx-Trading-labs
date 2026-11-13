@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { siteConfig } from "@/lib/content";
+import { CopyrightNotice } from "@/components/copyright-notice";
 
 function externalHref(value: string) {
   try {
@@ -62,11 +63,11 @@ export function SiteFooter({ links = {} }: { links?: Record<string, string> }) {
         </div>
       </div>
       <div className="footer-bottom page-width">
-        <span>© 2026 KNIGHTFX TRADING LABS. ALL RIGHTS RESERVED.</span>
+        <CopyrightNotice />
         <div>
           <Link href="/privacy">Privacy</Link>
-          <Link href="/terms">Terms</Link>
-          <Link href="/risk-disclosure">Risk disclosure</Link>
+          <Link href="/terms">Terms &amp; Conditions</Link>
+          <Link href="/risk-disclosure">Disclaimer</Link>
           <Link href="/affiliate-disclosure">Affiliate disclosure</Link>
         </div>
         <a className="back-to-top" href="#home" aria-label="Back to top">↑</a>

@@ -1,8 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight, RotateCcw, RotateCw } from "lucide-react";
+import { ArrowRight, ArrowUpRight, RotateCw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { AffiliateCodeButton } from "@/components/affiliate-code";
+import { LetterReveal } from "@/components/letter-reveal";
+import { Reveal } from "@/components/reveal";
 import type { PublicSiteContent } from "@/lib/public-content";
 
 type ProviderCategory = "prop_firm" | "broker";
@@ -20,13 +23,14 @@ const firmLinks = [
 ] as const;
 
 const partnerLogos: Record<string, string> = {
-  foraxis: "/partners/foraxis.png",
-  funderblu: "/partners/funderblu.png",
-  fundedsquad: "/partners/fundedsquad.png",
-  legionfunding: "/partners/legion-funding.png",
-  blueguardian: "/partners/blueguardian.png",
-  xmglobal: "/partners/xm-global.png",
-  valetax: "/partners/valetax.png",
+  foraxis: "/partners/foraxis.jpg",
+  funderblu: "/partners/funderblu.jpg",
+  vestmarkets: "/partners/vestmarkets.jpg",
+  fundedsquad: "/partners/fundedsquad.jpg",
+  legionfunding: "/partners/legion-funding.jpg",
+  blueguardian: "/partners/blueguardian.jpg",
+  xmglobal: "/partners/xm-global.jpg",
+  valetax: "/partners/valetax.jpg",
 };
 
 const safeExternalLink = (value: string) => {
@@ -43,15 +47,20 @@ const normalizeFirmName = (value: string) => value.toLowerCase().replace(/[^a-z0
 function PartnerCardFace({ partner, index, isFirmView }: { partner: PartnerCard; index: number; isFirmView: boolean }) {
   return (
     <>
-      <div className="partner-card-topline"><span>{String(index + 1).padStart(2, "0")} / {isFirmView ? "FIRM" : "BROKER"}</span>{isFirmView ? <ArrowUpRight size={16} aria-hidden="true" /> : <RotateCw size={16} aria-hidden="true" />}</div>
+      <div className="partner-card-topline">
+        <span className="partner-card-index">{String(index + 1).padStart(2, "0")}</span>
+      </div>
       <div className="partner-logo-stage">
         {partner.logo ? (
-          <Image src={partner.logo} alt="" fill sizes="(max-width: 680px) 90vw, (max-width: 1100px) 42vw, 38vw" className="partner-logo-image" />
+          <Image src={partner.logo} alt="" fill sizes="(max-width: 680px) 90vw, 46vw" className="partner-logo-image" />
         ) : (
           <span className="partner-wordmark-fallback">VEST<span>MARKETS</span></span>
         )}
       </div>
-      <div className="partner-card-footer"><strong>{partner.name}</strong><span>{isFirmView ? "Explore firm" : "Tap to reveal"} {isFirmView ? <ArrowUpRight size={13} aria-hidden="true" /> : <RotateCw size={13} aria-hidden="true" />}</span></div>
+      <div className="partner-card-footer">
+        <strong>{partner.name}</strong>
+        <span>{isFirmView ? <ArrowUpRight size={15} aria-hidden="true" /> : <RotateCw size={15} aria-hidden="true" />}</span>
+      </div>
     </>
   );
 }
@@ -71,16 +80,15 @@ function BrokerFlipCard({ partner, index, href }: { partner: PartnerCard; index:
   return (
     <div className={`partner-panel partner-flip-card${isFlipped ? " is-flipped" : ""}`} data-partner={normalizeFirmName(partner.name)} style={{ animationDelay: `${index * 45}ms` }}>
       <div className="partner-flip-inner">
-        <button ref={flipButtonRef} className="partner-flip-face partner-flip-front" type="button" aria-label={`Show ${partner.name} details`} aria-expanded={isFlipped} tabIndex={isFlipped ? -1 : 0} aria-hidden={isFlipped} onClick={() => { hasInteractedRef.current = true; setIsFlipped(true); }}>
+        <button ref={flipButtonRef} className="partner-flip-face partner-flip-front" type="button" aria-label={`Show ${partner.name} offer`} aria-expanded={isFlipped} tabIndex={isFlipped ? -1 : 0} aria-hidden={isFlipped} onClick={() => { hasInteractedRef.current = true; setIsFlipped(true); }}>
           <PartnerCardFace partner={partner} index={index} isFirmView={false} />
         </button>
         <div className="partner-flip-face partner-back-face" aria-hidden={!isFlipped}>
           <span className="partner-back-eyebrow">BROKER / {String(index + 1).padStart(2, "0")}</span>
           <h3>{partner.name}</h3>
-          <p>Continue to the broker’s website to view its services and account options.</p>
+          <p>Deposit through {partner.name} to get a bonus and free access to the KnightFX Inner Circle.</p>
           <div className="partner-back-actions">
             <a ref={visitLinkRef} className="partner-visit-link" href={href} target="_blank" rel="sponsored noopener noreferrer" tabIndex={isFlipped ? 0 : -1}>Visit {partner.name} <ArrowUpRight size={15} aria-hidden="true" /></a>
-            <button className="partner-flip-back-button" type="button" tabIndex={isFlipped ? 0 : -1} onClick={() => { hasInteractedRef.current = true; setIsFlipped(false); }}><RotateCcw size={13} aria-hidden="true" /> Back</button>
           </div>
         </div>
       </div>
@@ -106,22 +114,29 @@ export function PartnersDirectory({ items }: { items: NonNullable<PublicSiteCont
   const isFirmView = category === "prop_firm";
 
   return (
+    <>
     <section className="section partners-section" id="partners">
       <div className="page-width partner-section-content">
         <div className="partner-section-heading">
-          <span className="eyebrow"><i /> KNIGHTFX PARTNERS</span>
-          <h2>Find your <em>trading partner.</em></h2>
+          <div className="partner-heading-main">
+            <span className="eyebrow"><i /> KNIGHTFX / PARTNER NETWORK</span>
+            <h2>Find your <em>trading partner.</em></h2>
+          </div>
+          <div className="partner-heading-aside">
+            <p>Explore prop firms and brokers connected with KnightFX. Review each provider’s latest terms directly before you decide.</p>
+            <div className="partner-network-index"><strong>08</strong><span><i />NETWORK LINKS</span></div>
+          </div>
         </div>
         <div className="partner-directory-toolbar">
           <div className="partner-filter-tabs" role="group" aria-label="Filter providers">
             <button type="button" aria-pressed={isFirmView} className={isFirmView ? "is-active" : ""} onClick={() => setCategory("prop_firm")}>
-              Firms
+              <span>Prop firms</span><small>06</small>
             </button>
             <button type="button" aria-pressed={!isFirmView} className={!isFirmView ? "is-active" : ""} onClick={() => setCategory("broker")}>
-              Brokers
+              <span>Brokers</span><small>02</small>
             </button>
           </div>
-          <span className="partner-count">{isFirmView ? "06 FIRMS" : "02 BROKERS"}</span>
+          <span className="partner-count"><i /> SHOWING {isFirmView ? "PROP FIRM PARTNERS" : "BROKER PARTNERS"}</span>
         </div>
 
         <div className={`partner-grid ${isFirmView ? "is-firms" : "is-brokers"}`} aria-live="polite" aria-label={isFirmView ? "Prop firms" : "Brokers"} key={category}>
@@ -141,5 +156,25 @@ export function PartnersDirectory({ items }: { items: NonNullable<PublicSiteCont
         </div>
       </div>
     </section>
+    <section className="partner-offer-section" aria-labelledby="partner-offer-title">
+      <div className="page-width partner-offer-layout">
+        <Reveal className="partner-offer-copy" blur>
+          <span className="eyebrow"><i /> KNIGHTFX COMMUNITY</span>
+          <h2 id="partner-offer-title" aria-label="Use the code. Access the offer.">
+            <span className="partner-offer-heading-line"><LetterReveal text="USE THE CODE." /></span>
+            <span className="partner-offer-heading-line partner-offer-heading-muted"><LetterReveal text="ACCESS THE OFFER." /></span>
+          </h2>
+          <p>Explore the KnightFX partner network and use our community code wherever it is available.</p>
+          <div className="partner-offer-actions">
+            <a className="button button-outline" href="#partners">Explore partners <ArrowRight size={15} aria-hidden="true" /></a>
+            <div className="partner-offer-code">
+              <span>COMMUNITY CODE</span>
+              <AffiliateCodeButton code="KNIGHTFX" />
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+    </>
   );
 }

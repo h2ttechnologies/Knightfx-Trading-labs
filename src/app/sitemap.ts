@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 import { courses, insights } from "@/lib/content";
 import { getPublicSiteContent } from "@/lib/public-content";
+import { siteUrl } from "@/lib/site-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-  if (!base) return [];
+  const base = siteUrl;
 
   const content = await getPublicSiteContent();
   const courseItems = content?.courses.length ? content.courses : courses;

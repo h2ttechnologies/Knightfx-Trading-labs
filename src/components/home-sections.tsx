@@ -5,9 +5,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   Check,
-  MessageCircle,
-  Send,
-  UsersRound,
 } from "lucide-react";
 import AcidSquares from "@/components/acid-squares";
 import { AboutOverview } from "@/components/about-overview";
@@ -235,28 +232,54 @@ function DestinationLink({ href, children, className = "" }: { href: string; chi
   return safeHref ? <a className={className} href={safeHref} target="_blank" rel="noreferrer">{children}</a> : <span className={`${className} unavailable-link`} aria-disabled="true">{children}<small>Link not connected</small></span>;
 }
 
+type CommunityPlatform = "discord" | "telegram" | "whatsapp";
+
+const communityPlatformPaths: Record<CommunityPlatform, string> = {
+  discord: "M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.393-.4065-.8742-.6267-1.2495a.077.077 0 00-.0785-.037A19.7363 19.7363 0 003.669 4.3698a.07.07 0 00-.0321.0275C.5334 9.0462-.32 13.5797.0992 18.0578a.0824.0824 0 00.0312.0561 19.9 19.9 0 006.012 3.0385.078.078 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057 13.131 13.131 0 01-1.872-.8926.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.074.074 0 01.0785.0095c.1202.0991.246.1971.3728.2914a.077.077 0 01-.0066.1277 12.298 12.298 0 01-1.873.8926.077.077 0 00-.0406.1067c.3604.698.7719 1.3627 1.225 1.9932a.076.076 0 00.0842.0286 19.839 19.839 0 006.0214-3.0385.077.077 0 00.0312-.0552c.5-5.1778-.8382-9.6748-3.5495-13.6604a.061.061 0 00-.0312-.0275ZM8.02 14.935c-1.155 0-2.1046-1.0607-2.1046-2.36 0-1.2993.9308-2.3599 2.1046-2.3599 1.183 0 2.123 1.0606 2.123 2.36 0 1.2992-.9308 2.3599-2.123 2.3599Zm7.9748 0c-1.155 0-2.1046-1.0607-2.1046-2.36 0-1.2993.9308-2.3599 2.1046-2.3599 1.183 0 2.123 1.0606 2.123 2.36 0 1.2992-.9308 2.3599-2.123 2.3599Z",
+  telegram: "M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z",
+  whatsapp: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z",
+};
+
+function CommunityPlatformIcon({ platform }: { platform: CommunityPlatform }) {
+  return <svg viewBox="0 0 24 24" fill="currentColor" focusable="false" aria-hidden="true"><path d={communityPlatformPaths[platform]} /></svg>;
+}
+
 export function Community({ links = {} }: { links?: Record<string, string> }) {
   const destinations = {
     ...siteConfig.links,
     ...Object.fromEntries(Object.entries(links).filter(([, value]) => Boolean(value?.trim()))),
   };
   const cards = [
-    { number: "01", title: "Discord community", description: "Connect with traders, join discussions and follow community announcements.", label: "JOIN DISCORD", href: destinations.discord, icon: MessageCircle },
-    { number: "02", title: "Telegram channel", description: "Get KnightFX education, announcements and community updates on Telegram.", label: "JOIN TELEGRAM", href: destinations.telegram, icon: Send },
-    { number: "03", title: "WhatsApp group", description: "Join the KnightFX group to stay connected with the wider trading community.", label: "JOIN WHATSAPP", href: destinations.whatsapp, icon: UsersRound },
+    { number: "01", platform: "discord" as const, title: "Discord community", description: "Connect with traders, join discussions and follow community announcements.", label: "JOIN DISCORD", href: destinations.discord },
+    { number: "02", platform: "telegram" as const, title: "Telegram channel", description: "Get KnightFX education, announcements and community updates on Telegram.", label: "JOIN TELEGRAM", href: destinations.telegram },
+    { number: "03", platform: "whatsapp" as const, title: "WhatsApp group", description: "Join the KnightFX group to stay connected with the wider trading community.", label: "JOIN WHATSAPP", href: destinations.whatsapp },
   ];
   return (
     <section className="section community-section" id="community">
       <div className="page-width">
-        <div className="community-topline"><span>GROW TOGETHER</span><span>COMMUNITY / 01—03</span></div>
-        <div className="community-heading-row"><h2>Trading is a journey.<br /><em>You don&apos;t have to take it alone.</em></h2><p>Connect with traders, exchange ideas, explore educational content and grow through shared experience.</p></div>
+        <div className="community-topline">
+          <span className="eyebrow community-section-label"><i />05 / KNIGHTFX COMMUNITY</span>
+          <div className="community-brand-lockup">
+            <Image src="/brand/logo.png" alt="" width={34} height={34} />
+            <span><strong>KNIGHTFX</strong><small>TRADING LABS</small></span>
+          </div>
+        </div>
+        <div className="community-intro">
+          <div className="community-intro-copy">
+            <h2>TRADE TOGETHER.<br /><em>GROW TOGETHER.</em></h2>
+            <p>A growing community of traders focused on learning, market discussion, discipline and continuous improvement.</p>
+          </div>
+          <div className="community-stat" aria-label="More than 200 active traders">
+            <strong>200<span>+</span></strong>
+            <small>ACTIVE TRADERS</small>
+          </div>
+        </div>
         <div className="community-grid">
           {cards.map((card, index) => {
-            const Icon = card.icon;
             return (
               <Reveal key={card.number} delay={index * 0.06}>
-                <article className="community-card">
-                  <div className="community-card-top"><span>{card.number} / COMMUNITY</span><Icon size={20} /></div>
+                <article className="community-card" data-platform={card.platform}>
+                  <div className="community-card-top"><span>{card.number} / COMMUNITY</span><span className="community-platform-mark"><CommunityPlatformIcon platform={card.platform} /></span></div>
                   <h3>{card.title}</h3><p>{card.description}</p>
                   <DestinationLink href={card.href} className="community-link">{card.label}<ArrowUpRight size={15} /></DestinationLink>
                 </article>
